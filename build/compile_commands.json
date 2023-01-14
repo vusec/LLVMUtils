@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/ubuntu/johannes/VeriPatch/LLVMUtils/build",
+  "command": "/home/ubuntu/llvm/ninja-build/bin/clang++  -DLLVMUtils_EXPORTS -D_DEBUG -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -I/home/ubuntu/johannes/VeriPatch/LLVMUtils/include -isystem /home/ubuntu/llvm/llvm/include -isystem /home/ubuntu/llvm/ninja-build/include  -g -fPIC   -fno-rtti -g -O2 -Wall -Wextra -Wno-reorder -Wno-unused-parameter -Wno-overloaded-virtual -Wno-ignored-qualifiers -fdiagnostics-color=always -std=gnu++2a -o CMakeFiles/LLVMUtils.dir/src/LLVMUtils.cpp.o -c /home/ubuntu/johannes/VeriPatch/LLVMUtils/src/LLVMUtils.cpp",
+  "file": "/home/ubuntu/johannes/VeriPatch/LLVMUtils/src/LLVMUtils.cpp"
+}
+]

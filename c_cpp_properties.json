@@ -1,0 +1,29 @@
+{
+    "env": {
+        "baseDir": "${workspaceFolder}/VeriPatch",
+        "ffMallocDir": "${baseDir}/FFMalloc",
+        "ubstarDir": "${baseDir}/UBStar",
+        "passDir": "${baseDir}/InstrumentPass"
+    },
+    "configurations": [
+        {
+            "name": "VeriPatch",
+            "intelliSenseMode": "clang-x64",
+            "includePath": [
+                "${ffMallocDir}/src/**",
+                "${ubstarDir}/code/**",
+                "${ubstarDir}/dist/**",
+                "${passDir}/include/**",
+                "/home/ubuntu/Everest/kremlin/include/**",
+                "/home/ubuntu/Everest/kremlin/kremlib/dist/generic/**"
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++20",
+            "compileCommands": "${passDir}/compile_commands.json",
+            "browse": {
+                "path": ["${workspaceFolder}"]
+            }
+        }
+    ],
+    "version": 4
+}

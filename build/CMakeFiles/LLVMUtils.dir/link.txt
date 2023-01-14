@@ -1,0 +1,1 @@
+/home/ubuntu/llvm/ninja-build/bin/clang++ -fPIC -g -fuse-ld=lld -shared -Wl,-soname,libLLVMUtils.so -o ../lib/libLLVMUtils.so CMakeFiles/LLVMUtils.dir/src/LLVMUtils.cpp.o 
