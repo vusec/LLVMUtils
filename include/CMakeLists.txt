@@ -1,2 +1,2 @@
 target_sources(LLVMUtils
-    PRIVATE LLVMUtils.hpp)
+    PUBLIC LLVMUtils.hpp)

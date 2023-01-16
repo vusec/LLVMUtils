@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ubuntu/Johannes/VeriPatch/LLVMUtils
+CMAKE_SOURCE_DIR = /home/ubuntu/Johannes/external/LLVMUtils
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ubuntu/Johannes/VeriPatch/LLVMUtils/build
+CMAKE_BINARY_DIR = /home/ubuntu/Johannes/external/LLVMUtils/build
 
 # Utility rule file for omp_gen.
 
@@ -67,6 +67,6 @@ CMakeFiles/omp_gen.dir/clean:
 .PHONY : CMakeFiles/omp_gen.dir/clean
 
 CMakeFiles/omp_gen.dir/depend:
-	cd /home/ubuntu/Johannes/VeriPatch/LLVMUtils/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ubuntu/Johannes/VeriPatch/LLVMUtils /home/ubuntu/Johannes/VeriPatch/LLVMUtils /home/ubuntu/Johannes/VeriPatch/LLVMUtils/build /home/ubuntu/Johannes/VeriPatch/LLVMUtils/build /home/ubuntu/Johannes/VeriPatch/LLVMUtils/build/CMakeFiles/omp_gen.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/ubuntu/Johannes/external/LLVMUtils/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ubuntu/Johannes/external/LLVMUtils /home/ubuntu/Johannes/external/LLVMUtils /home/ubuntu/Johannes/external/LLVMUtils/build /home/ubuntu/Johannes/external/LLVMUtils/build /home/ubuntu/Johannes/external/LLVMUtils/build/CMakeFiles/omp_gen.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/omp_gen.dir/depend
 

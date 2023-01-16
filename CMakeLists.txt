@@ -80,3 +80,8 @@ target_include_directories(LLVMUtils
 # Include all of the libraries needed for the utilities library
 add_subdirectory(include)
 add_subdirectory(src)
+
+# Install LLVMUtils
+install(TARGETS LLVMUtils
+    LIBRARY PUBLIC_HEADER
+)
