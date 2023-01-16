@@ -1,4 +1,4 @@
-# Install script for directory: /home/ubuntu/johannes/VeriPatch/LLVMUtils/include
+# Install script for directory: /home/ubuntu/Johannes/VeriPatch/LLVMUtils/include
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

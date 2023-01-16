@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ubuntu/johannes/VeriPatch/LLVMUtils
+CMAKE_SOURCE_DIR = /home/ubuntu/Johannes/VeriPatch/LLVMUtils
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ubuntu/johannes/VeriPatch/LLVMUtils/build
+CMAKE_BINARY_DIR = /home/ubuntu/Johannes/VeriPatch/LLVMUtils/build
 
 # Utility rule file for acc_gen.
 
@@ -67,6 +67,6 @@ CMakeFiles/acc_gen.dir/clean:
 .PHONY : CMakeFiles/acc_gen.dir/clean
 
 CMakeFiles/acc_gen.dir/depend:
-	cd /home/ubuntu/johannes/VeriPatch/LLVMUtils/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ubuntu/johannes/VeriPatch/LLVMUtils /home/ubuntu/johannes/VeriPatch/LLVMUtils /home/ubuntu/johannes/VeriPatch/LLVMUtils/build /home/ubuntu/johannes/VeriPatch/LLVMUtils/build /home/ubuntu/johannes/VeriPatch/LLVMUtils/build/CMakeFiles/acc_gen.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/ubuntu/Johannes/VeriPatch/LLVMUtils/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ubuntu/Johannes/VeriPatch/LLVMUtils /home/ubuntu/Johannes/VeriPatch/LLVMUtils /home/ubuntu/Johannes/VeriPatch/LLVMUtils/build /home/ubuntu/Johannes/VeriPatch/LLVMUtils/build /home/ubuntu/Johannes/VeriPatch/LLVMUtils/build/CMakeFiles/acc_gen.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/acc_gen.dir/depend
 

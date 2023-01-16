@@ -6,5 +6,5 @@ CXX_FLAGS = -g -fPIC   -fno-rtti -g -O2 -Wall -Wextra -Wno-reorder -Wno-unused-p
 
 CXX_DEFINES = -DLLVMUtils_EXPORTS -D_DEBUG -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS
 
-CXX_INCLUDES = -I/home/ubuntu/johannes/VeriPatch/LLVMUtils/include -isystem /home/ubuntu/llvm/llvm/include -isystem /home/ubuntu/llvm/ninja-build/include 
+CXX_INCLUDES = -I/home/ubuntu/Johannes/VeriPatch/LLVMUtils/include -isystem /home/ubuntu/llvm/llvm/include -isystem /home/ubuntu/llvm/ninja-build/include 
 

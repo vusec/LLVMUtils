@@ -42,9 +42,9 @@ string
 vector
 -
 
-/home/ubuntu/johannes/VeriPatch/LLVMUtils/src/LLVMUtils.cpp
+/home/ubuntu/Johannes/VeriPatch/LLVMUtils/src/LLVMUtils.cpp
 LLVMUtils.hpp
-/home/ubuntu/johannes/VeriPatch/LLVMUtils/src/LLVMUtils.hpp
+/home/ubuntu/Johannes/VeriPatch/LLVMUtils/src/LLVMUtils.hpp
 cxxabi.h
 -
 llvm/ADT/SmallPtrSet.h
