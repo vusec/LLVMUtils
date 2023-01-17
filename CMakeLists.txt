@@ -24,16 +24,6 @@ separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
 add_definitions(${LLVM_DEFINITIONS_LIST})
 include_directories(SYSTEM ${LLVM_INCLUDE_DIRS})
 
-message(STATUS
-"LLVM STATUS:
-    Version     ${LLVM_PACKAGE_VERSION}
-    Definitions ${LLVM_DEFINITIONS}
-    Location    ${LLVM_DIR}
-    Includes    ${LLVM_INCLUDE_DIRS}
-    Libraries   ${LLVM_LIBRARY_DIRS}
-    Targets     ${LLVM_TARGETS_TO_BUILD}
-    CMake Dir   ${LLVM_CMAKE_DIR}")
-
 # =============================================================================
 # LLVM Utilities library definition
 # =============================================================================
@@ -44,13 +34,6 @@ set_target_properties(LLVMUtils PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/lib"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/lib"
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
-message(STATUS
-"BUILD DIRECTORY CONFIGURATION:
-    Root dir: ${SOURCE_DIR}
-    Binary dir: ${BINARY_DIR}
-    Archive output dir: ${ARCHIVE_OUTPUT_DIRECTORY}
-    Library output dir: ${LIBRARY_OUTPUT_DIRECTORY}
-    Runtime output dir: ${RUNTIME_OUTPUT_DIRECTORY}")
 
 # Configure C++ standard version for target
 set_target_properties(LLVMUtils PROPERTIES

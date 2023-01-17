@@ -65,6 +65,8 @@ llvm/Analysis/TargetLibraryInfo.h
 -
 llvm/Analysis/ValueTracking.h
 -
+llvm/Demangle/Demangle.h
+-
 llvm/IR/DerivedTypes.h
 -
 llvm/IR/Dominators.h
@@ -80,6 +82,12 @@ llvm/IR/Statepoint.h
 llvm/Passes/PassBuilder.h
 -
 llvm/Support/Casting.h
+-
+llvm/Support/raw_ostream.h
+-
+cstdint
+-
+limits
 -
 unordered_set
 -
@@ -1279,6 +1287,12 @@ llvm/BinaryFormat/Dwarf.def
 /home/ubuntu/llvm/llvm/include/llvm/BinaryFormat/llvm/BinaryFormat/Dwarf.def
 llvm/BinaryFormat/Dwarf.def
 /home/ubuntu/llvm/llvm/include/llvm/BinaryFormat/llvm/BinaryFormat/Dwarf.def
+
+/home/ubuntu/llvm/llvm/include/llvm/Demangle/Demangle.h
+cstddef
+-
+string
+-
 
 /home/ubuntu/llvm/llvm/include/llvm/IR/Argument.h
 llvm/ADT/Twine.h
