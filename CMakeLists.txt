@@ -43,7 +43,7 @@ set_target_properties(LLVMUtils PROPERTIES
 # Specify target-specific compile options
 target_compile_options(LLVMUtils
     PRIVATE "-g"
-    PRIVATE "-O2"
+    PRIVATE "-O3"
     PRIVATE "-Wall"
     PRIVATE "-Wextra"
     PRIVATE "-Wno-reorder"
