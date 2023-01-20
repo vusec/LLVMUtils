@@ -88,23 +88,11 @@ auto str(const Value *V) -> string {
     if (V) { V->print(RSO, true); }
     return S;
 }
-auto str(Value &V) -> string {
-    string             S;
-    raw_string_ostream RSO(S);
-    V.print(RSO, true);
-    return S;
-}
 auto str(const Type *T) -> string {
     assert(T);
     string             S;
     raw_string_ostream RSO(S);
     if (T) { T->print(RSO, true); }
-    return S;
-}
-auto str(Type &T) -> string {
-    string             S;
-    raw_string_ostream RSO(S);
-    T.print(RSO, true);
     return S;
 }
 
@@ -185,15 +173,13 @@ auto getSrcLocStr(const Function *F) -> string {
 // Functions for determining whether given type or value is, contains, or uses a var-arg object
 auto isVarArgList(const Type *T) -> bool {
     assert(T);
-    if (T->isStructTy()) return false;                            // LLVM va_list is always struct
-    if (cast<StructType>(T)->isLiteral()) return false;           // Literal structs can't have name
-    return T->getStructName().contains_insensitive("va_list");    // Check if named va_list struct
+    auto *STy = dyn_cast<StructType>(T);
+    if (!STy) return false;                                   // LLVM va_list is always struct
+    if (STy->isLiteral()) return false;                       // Literal structs can't have name
+    return STy->getName().contains_insensitive("va_list");    // Check if named va_list struct
 }
 auto isOrHasVarArgList(const Type *T) -> bool {
     assert(T);
-    auto *VAListTy = StructType::getTypeByName(T->getContext(), "struct.__va_list_tag");
-    if (!VAListTy) return false;    // No va_list struct in entire module; can early-exit
-
     SmallPtrSet<const Type *, 4> Visited;
     SmallVector<const Type *, 4> Worklist;
     auto                         AddWork = [&](const Type *Ty) -> void {
@@ -206,17 +192,13 @@ auto isOrHasVarArgList(const Type *T) -> bool {
     while (!Worklist.empty()) {
         auto *Ty = Worklist.pop_back_val();
         assert(Ty && Visited.contains(Ty));
-        if (Ty == VAListTy || isVarArgList(Ty)) return true;    // Ty is va_list struct
+        if (isVarArgList(Ty)) return true;    // Ty is va_list struct
         for (auto *SubTy : Ty->subtypes()) {
             assert(SubTy);
             AddWork(SubTy);    // Explore all subtypes
         }
     }
     return false;    // No matches to va_list struct found
-}
-auto isOrHasVarArgList(const Value *V) -> bool {
-    assert(V);
-    return isOrHasVarArgList(V->getType());    // Check if type of V could be va_list
 }
 
 // Create/get function type for return type and optional list of argument types

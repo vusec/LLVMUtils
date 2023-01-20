@@ -43,9 +43,7 @@ auto early_inc(RangeT &&Range) {    // NOLINT
 
 // Print LLVM value to string object
 auto str(const llvm::Value *) -> std::string;
-auto str(const llvm::Value &) -> std::string;
 auto str(const llvm::Type *) -> std::string;
-auto str(const llvm::Type &) -> std::string;
 
 // Convert boolean to readable string
 auto boolToStr(bool) -> std::string;
@@ -65,7 +63,6 @@ auto getSrcLocStr(const llvm::Function *) -> std::string;
 // Functions for determining whether given type or value is, contains, or uses a var-arg object
 auto isVarArgList(const llvm::Type *) -> bool;
 auto isOrHasVarArgList(const llvm::Type *) -> bool;
-auto isOrHasVarArgList(const llvm::Value *) -> bool;
 
 // Create/get function type for return type and optional list of argument types
 auto getFnTy(llvm::Type *) -> llvm::FunctionType *;

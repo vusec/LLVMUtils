@@ -7,6 +7,10 @@
 #IncludeRegexTransform: 
 
 ../include/LLVMUtils.hpp
+llvm/ADT/iterator_range.h
+-
+llvm/ADT/STLExtras.h
+-
 llvm/ADT/StringRef.h
 -
 llvm/IR/DerivedTypes.h
