@@ -69,7 +69,7 @@ CMAKE_EXE_LINKER_FLAGS_RELEASE:STRING=
 CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 
 //Install path prefix, prepended onto install directories.
-CMAKE_INSTALL_PREFIX:PATH=/home/ubuntu/Johannes/external/LLVMUtils
+CMAKE_INSTALL_PREFIX:PATH=/usr/local
 
 //Path to a program.
 CMAKE_LINKER:FILEPATH=/usr/bin/ld
@@ -113,7 +113,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=InstrumentPass
+CMAKE_PROJECT_NAME:STATIC=LLVMUtils
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/usr/bin/ranlib
@@ -177,12 +177,6 @@ CMAKE_STRIP:FILEPATH=/usr/bin/strip
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
-//Value Computed by CMake
-InstrumentPass_BINARY_DIR:STATIC=/home/ubuntu/Johannes/external/LLVMUtils/build
-
-//Value Computed by CMake
-InstrumentPass_SOURCE_DIR:STATIC=/home/ubuntu/Johannes/external/LLVMUtils
-
 //Path to a file.
 LIBXML2_INCLUDE_DIR:PATH=/usr/include/libxml2
 
@@ -191,6 +185,12 @@ LIBXML2_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libxml2.so
 
 //Path to a program.
 LIBXML2_XMLLINT_EXECUTABLE:FILEPATH=LIBXML2_XMLLINT_EXECUTABLE-NOTFOUND
+
+//Value Computed by CMake
+LLVMUtils_BINARY_DIR:STATIC=/home/ubuntu/Johannes/external/LLVMUtils/build
+
+//Value Computed by CMake
+LLVMUtils_SOURCE_DIR:STATIC=/home/ubuntu/Johannes/external/LLVMUtils
 
 //The directory containing a CMake configuration file for LLVM.
 LLVM_DIR:PATH=/home/ubuntu/llvm/ninja-build/lib/cmake/llvm

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16.3)
-project(InstrumentPass CXX)
+project(LLVMUtils CXX)
 
 # =============================================================================
 # Global CMake core & compiler settings
