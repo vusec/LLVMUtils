@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
-  "../lib/libLLVMUtils.pdb"
-  "../lib/libLLVMUtils.so"
   "CMakeFiles/LLVMUtils.dir/src/LLVMUtils.cpp.o"
+  "libLLVMUtils.pdb"
+  "libLLVMUtils.so"
 )
 
 # Per-language clean rules from dependency scanning.

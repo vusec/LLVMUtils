@@ -7,6 +7,17 @@ project(InstrumentPass CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 set(CMAKE_VERBOSE_MAKEFILE on CACHE STRING "Verbose Makefiles")
 set(CMAKE_BUILD_TYPE Debug CACHE STRING "Debug Build Type" FORCE)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
+set(LOG_LEVEL "LOG_LEVEL_ERROR" CACHE STRING "Set the logging level")
+
+# Global Compiler flags
+add_compile_options("-Wall")
+add_compile_options("-fdiagnostics-color=always")
+
+# Set global linker options
+add_link_options("-fuse-ld=lld")
 
 # =============================================================================
 # LLVM & LLVM SETTINGS/CONFIG
@@ -28,12 +39,6 @@ include_directories(SYSTEM ${LLVM_INCLUDE_DIRS})
 # LLVM Utilities library definition
 # =============================================================================
 add_library(LLVMUtils SHARED)
-
-# Set build directories
-set_target_properties(LLVMUtils PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/lib"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/lib"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
 # Configure C++ standard version for target
 set_target_properties(LLVMUtils PROPERTIES
