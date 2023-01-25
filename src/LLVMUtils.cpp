@@ -78,7 +78,9 @@ inline static const unordered_set<string> KnownMemFuncs = {"malloc",
                                                            "delete[]",
                                                            "tempnam",
                                                            "get_current_dir_name",
-                                                           "realpath"};
+                                                           "realpath"
+                                                           "longjmp",
+                                                           "siglongjmp"};
 
 // Print LLVM value to string object
 auto str(const Value *V) -> string {
