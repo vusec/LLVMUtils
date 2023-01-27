@@ -305,7 +305,7 @@ auto dumpIR(const Module *M, string File) -> void {
     error_code     EC;
     raw_fd_ostream IRDumpFile(File, EC);    // Truncates existing
     if (IRDumpFile.has_error()) return;
-    M->print(IRDumpFile, nullptr, false, true);    // Dump with debug info
+    M->print(IRDumpFile, nullptr);    // Dump with debug info
     IRDumpFile.close();
 }
 
