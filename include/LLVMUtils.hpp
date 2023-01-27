@@ -63,6 +63,7 @@ auto getSrcLocStr(const llvm::Function *) -> std::string;
 // Functions for determining whether given type or value is, contains, or uses a var-arg object
 auto isVarArgList(const llvm::Type *) -> bool;
 auto isOrHasVarArgList(const llvm::Type *) -> bool;
+auto isVarArgVal(const llvm::Value *) -> bool;
 
 // Create/get function type for return type and optional list of argument types
 auto getFnTy(llvm::Type *) -> llvm::FunctionType *;
@@ -84,6 +85,10 @@ auto getAllocas(const llvm::IntrinsicInst *) -> std::set<llvm::AllocaInst *>;
 
 // Dump LLVM module IR to file
 auto dumpIR(const llvm::Module *, std::string) -> void;
+
+// Function for retrieving a module's global constructors
+auto getGlobalCtorsVar(const llvm::Module &) -> llvm::GlobalVariable *;
+auto getGlobalCtors(llvm::GlobalVariable *) -> std::vector<std::pair<uint32_t, llvm::Function *>>;
 
 // Run the the default O0, O1, O2, or O3 optimisation pass pipelines on the given module
 auto optimiseModule(llvm::Module *, llvm::PassBuilder::OptimizationLevel)
