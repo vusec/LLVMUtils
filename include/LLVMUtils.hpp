@@ -15,6 +15,7 @@
 #include <llvm/ADT/iterator_range.h>
 #include <llvm/ADT/STLExtras.h>
 #include <llvm/ADT/StringRef.h>
+#include <llvm/IR/DebugInfoMetadata.h>
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/Function.h>
 #include <llvm/IR/GlobalVariable.h>
@@ -53,6 +54,9 @@ auto isSysDef(const llvm::Instruction *const) -> bool;
 
 // Check if address marked dead is certain to never become alive again after lifetime end marker
 auto staysDead(llvm::IntrinsicInst *) -> bool;
+
+// Get fully inlined source location (walk inlined-at chain)
+auto getFullyInlinedSrcLoc(const llvm::Instruction *) -> llvm::DILocation *;
 
 // Get source row and column location if known (needs debug symbols); {-1, -1} if unknown location
 auto getSrcLoc(const llvm::Instruction *) -> std::pair<int64_t, int64_t>;

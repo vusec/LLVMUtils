@@ -156,25 +156,27 @@ auto staysDead(IntrinsicInst *II) -> bool {
     return true;    // No lifetime start marker uses II after II; addr stays dead until func ret
 }
 
+// Get fully inlined source location (walk inlined-at chain)
+auto getFullyInlinedSrcLoc(const Instruction *I) -> DILocation * {
+    if (!I) throw invalid_argument("Null ptr argument!");
+    auto *DILoc = I->getDebugLoc().get();
+    while (DILoc && DILoc->getInlinedAt()) DILoc = DILoc->getInlinedAt();
+    return DILoc;
+}
+
 // Get source row and column location if known (needs debug symbols); {-1, -1} if unknown location
 auto getSrcLoc(const Instruction *I) -> pair<int64_t, int64_t> {
     if (!I) throw invalid_argument("Null ptr argument!");
-    if (auto *DILoc = I->getDebugLoc().get()) {
-        while (DILoc->getInlinedAt()) DILoc = DILoc->getInlinedAt();
-        return {DILoc->getLine(), DILoc->getColumn()};
-    }
-    return {-1, -1};    // Unknown location
+    if (auto *SrcLoc = getFullyInlinedSrcLoc(I)) return {SrcLoc->getLine(), SrcLoc->getColumn()};
+    return {-7, -7};
 }
 
 // Get string with the name of the function & the file where the function is defined
 auto getSrcLocStr(const Function *F) -> string {
     if (!F) throw invalid_argument("Null ptr argument!");
     auto *Sub = F->getSubprogram();
-    if (!Sub) return "unknown_file";
-
-    auto File     = Sub->getFilename().str();        // Get name of source file
-    auto FuncName = demangle(F->getName().str());    // Get demangled if applicable
-    return FuncName + "() (file: " + File + ")";
+    return Sub ? demangle(F->getName().str()) + "() (file: " + Sub->getFilename().str() + ")"
+               : demangle(F->getName().str()) + "() (file: unknown)";
 }
 
 // Functions for determining whether given type or value is, contains, or uses a var-arg object

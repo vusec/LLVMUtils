@@ -1,22 +1,23 @@
 cmake_minimum_required(VERSION 3.16.3)
-project(LLVMUtils CXX)
+project(LLVMUtils)
 
 # =============================================================================
 # Global CMake core & compiler settings
 # =============================================================================
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 set(CMAKE_VERBOSE_MAKEFILE on CACHE STRING "Verbose Makefiles")
-set(CMAKE_BUILD_TYPE Debug CACHE STRING "Debug Build Type" FORCE)
+set(LOG_LVL LVL_INFO CACHE STRING "Logging level for VeriPatch")
+set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type debug" FORCE)
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
-set(LOG_LEVEL "LOG_LEVEL_ERROR" CACHE STRING "Set the logging level")
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS ON)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-# Global Compiler flags
 add_compile_options("-Wall")
 add_compile_options("-fdiagnostics-color=always")
-
-# Set global linker options
 add_link_options("-fuse-ld=lld")
 
 # =============================================================================
@@ -41,36 +42,46 @@ include_directories(SYSTEM ${LLVM_INCLUDE_DIRS})
 # =============================================================================
 add_library(LLVMUtils SHARED)
 
-# Configure C++ standard version for target
-set_target_properties(LLVMUtils PROPERTIES
-    CXX_STANDARD 20
-    CXX_STANDARD_REQUIRED YES)
+set_target_properties(LLVMUtils
+    PROPERTIES
+        CXX_STANDARD 20
+        CXX_STANDARD_REQUIRED ON
+        CXX_EXTENSIONS ON
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
+        C_EXTENSIONS ON
+)
 
-# Specify target-specific compile options
 target_compile_options(LLVMUtils
-    PRIVATE "-g"
-    PRIVATE "-O3"
-    PRIVATE "-Wall"
-    PRIVATE "-Wextra"
-    PRIVATE "-Wno-reorder"
-    PRIVATE "-Wno-unused-parameter"
-    PRIVATE "-Wno-overloaded-virtual"
-    PRIVATE "-Wno-ignored-qualifiers"
-    PRIVATE "-fdiagnostics-color=always")
+    PRIVATE
+        "-g"
+        "-O2"
+        "-Wall"
+        "-Wextra"
+        "-Wno-reorder"
+        "-Wno-unused-parameter"
+        "-Wno-overloaded-virtual"
+        "-Wno-ignored-qualifiers"
+        "-fdiagnostics-color=always"
+)
 
-# Specify target-specific linker options
-target_link_options(LLVMUtils
-    PRIVATE "-fuse-ld=lld")
+target_link_options(LLVMUtils PRIVATE "-fuse-ld=lld")
+target_include_directories(LLVMUtils PUBLIC "include")
 
-# Specify include file tree (publicly available)
-target_include_directories(LLVMUtils
-    PUBLIC "include")
-
-# Include all of the libraries needed for the utilities library
 add_subdirectory(include)
 add_subdirectory(src)
 
-# Install LLVMUtils
-install(TARGETS LLVMUtils
-    LIBRARY PUBLIC_HEADER
+# Get and install into default installation dirs. Don't export headers, only compiled libs
+include(GNUInstallDirs)
+install(
+    TARGETS
+        LLVMUtils
+    RUNTIME
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
