@@ -62,7 +62,7 @@ auto getFullyInlinedSrcLoc(const llvm::Instruction *) -> llvm::DILocation *;
 auto getSrcLoc(const llvm::Instruction *) -> std::pair<int64_t, int64_t>;
 
 // Get string with the name of the function & the file where the function is defined
-auto getSrcLocStr(const llvm::Function *) -> std::string;
+auto getSrcLocStr(const llvm::Function *, const std::string = "unknown_id") -> std::string;
 
 // Functions for determining whether given type or value is, contains, or uses a var-arg object
 auto isVarArgList(const llvm::Type *) -> bool;

@@ -172,11 +172,11 @@ auto getSrcLoc(const Instruction *I) -> pair<int64_t, int64_t> {
 }
 
 // Get string with the name of the function & the file where the function is defined
-auto getSrcLocStr(const Function *F) -> string {
-    if (!F) throw invalid_argument("Null ptr argument!");
-    auto *Sub = F->getSubprogram();
-    return Sub ? demangle(F->getName().str()) + "() (file: " + Sub->getFilename().str() + ")"
-               : demangle(F->getName().str()) + "() (file: unknown)";
+auto getSrcLocStr(const Function *F, string ModID) -> string {
+    auto Func = F && F->hasName() ? demangle(F->getName().str()) : "unknown_function";
+    auto File = F && F->getSubprogram() ? F->getSubprogram()->getFilename().str() : "unknown_file";
+    auto Path = F && F->getSubprogram() ? F->getSubprogram()->getDirectory().str() : "unknown_path";
+    return Func + "::" + File + "::" + Path + "::" + ModID;
 }
 
 // Functions for determining whether given type or value is, contains, or uses a var-arg object
