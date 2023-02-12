@@ -182,13 +182,14 @@ auto getSrcLocStr(const Function *F, string ModID) -> string {
 // Functions for determining whether given type or value is, contains, or uses a var-arg object
 auto isVarArgList(const Type *T) -> bool {
     if (!T) throw invalid_argument("Null ptr argument!");
+    if (!T->isStructTy()) return false;
     auto *STy = dyn_cast<StructType>(T);
-    if (!STy) return false;                                   // LLVM va_list is always struct
-    if (STy->isLiteral()) return false;                       // Literal structs can't have name
-    return STy->getName().contains_insensitive("va_list");    // Check if named va_list struct
+    return STy && !STy->isLiteral() && STy->getName().contains_insensitive("va_list");
 }
 auto isOrHasVarArgList(const Type *T) -> bool {
     if (!T) throw invalid_argument("Null ptr argument!");
+    if (!T->isAggregateType() && !T->isVectorTy()) return false;
+
     SmallPtrSet<const Type *, 4> Visited;
     SmallVector<const Type *, 4> Worklist;
     auto                         AddWork = [&](const Type *Ty) -> void {
@@ -198,10 +199,10 @@ auto isOrHasVarArgList(const Type *T) -> bool {
     // Check if the type itself, or any of its contained subtypes recursively, are va_list structs
     AddWork(T);
     while (!Worklist.empty()) {
-        auto *Ty = Worklist.pop_back_val();
+        const auto *Ty = Worklist.pop_back_val();
         if (!Ty) continue;
         if (isVarArgList(Ty)) return true;    // Ty is va_list struct
-        for (auto *SubTy : Ty->subtypes()) {
+        for (const auto *SubTy : Ty->subtypes()) {
             AddWork(SubTy);    // Explore all subtypes
         }
     }
@@ -210,7 +211,7 @@ auto isOrHasVarArgList(const Type *T) -> bool {
 auto isVarArgVal(const Value *V) -> bool {
     if (!V) throw invalid_argument("Null ptr argument!");
     if (isOrHasVarArgList(V->getType())) return true;
-    if (auto *U = dyn_cast<User>(V)) {
+    if (const auto *U = dyn_cast<User>(V)) {
         for (const auto *Op : U->operand_values()) {
             if (isOrHasVarArgList(Op->getType())) return true;
         }
