@@ -25,6 +25,7 @@
 #include <llvm/Demangle/Demangle.h>
 #include <llvm/IR/Constants.h>
 #include <llvm/IR/DerivedTypes.h>
+#include <llvm/IR/DiagnosticInfo.h>
 #include <llvm/IR/Dominators.h>
 #include <llvm/IR/IntrinsicInst.h>
 #include <llvm/IR/Intrinsics.h>
@@ -35,6 +36,7 @@
 #include <llvm/Support/raw_ostream.h>
 
 #include <cstdint>
+#include <filesystem>
 #include <limits>
 #include <stdexcept>
 #include <system_error>
@@ -44,6 +46,8 @@ namespace llvm_utils {
 
 using namespace std;
 using namespace llvm;
+namespace fs = filesystem;
+
 inline static const unordered_set<string> KnownMemFuncs = {"malloc",
                                                            "calloc",
                                                            "realloc",
@@ -166,17 +170,20 @@ auto getFullyInlinedSrcLoc(const Instruction *I) -> DILocation * {
 
 // Get source row and column location if known (needs debug symbols); {-1, -1} if unknown location
 auto getSrcLoc(const Instruction *I) -> pair<int64_t, int64_t> {
-    if (!I) throw invalid_argument("Null ptr argument!");
-    if (auto *SrcLoc = getFullyInlinedSrcLoc(I)) return {SrcLoc->getLine(), SrcLoc->getColumn()};
-    return {-7, -7};
+    if (!I) return {-7, -7};
+    DiagnosticLocation Loc(I->getDebugLoc());
+    if (!Loc.isValid()) return {-8, -8};
+    auto Row = Loc.getLine() != 0 ? (int64_t) Loc.getLine() : -9;
+    auto Col = Loc.getColumn() != 0 ? (int64_t) Loc.getColumn() : -9;
+    return {Row, Col};
 }
 
 // Get string with the name of the function & the file where the function is defined
 auto getSrcLocStr(const Function *F, string ModID) -> string {
-    auto Func = F && F->hasName() ? demangle(F->getName().str()) : "unknown_function";
-    auto File = F && F->getSubprogram() ? F->getSubprogram()->getFilename().str() : "unknown_file";
-    auto Path = F && F->getSubprogram() ? F->getSubprogram()->getDirectory().str() : "unknown_path";
-    return Func + "::" + File + "::" + Path + "::" + ModID;
+    DiagnosticLocation Loc(F ? F->getSubprogram() : nullptr);
+    auto               FuncName = F ? demangle(F->getName().str()) : "unknown_function";
+    auto FileName = Loc.isValid() ? fs::path(Loc.getAbsolutePath()).filename() : "unknown_file";
+    return FuncName + ";;" + FileName.string() + ";;" + ModID;
 }
 
 // Functions for determining whether given type or value is, contains, or uses a var-arg object
