@@ -40,6 +40,8 @@ separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
 add_definitions(${LLVM_DEFINITIONS_LIST})
 include_directories(SYSTEM ${LLVM_INCLUDE_DIRS})
 
+llvm_map_components_to_libnames(llvm_libs all)
+
 # =============================================================================
 # LLVM Utilities library definition
 # =============================================================================
@@ -70,6 +72,8 @@ target_compile_options(LLVMUtils
 
 target_link_options(LLVMUtils PRIVATE "-fuse-ld=lld")
 target_include_directories(LLVMUtils PUBLIC "include")
+
+target_link_libraries(LLVMUtils ${llvm_libs})
 
 add_subdirectory(include)
 add_subdirectory(src)
