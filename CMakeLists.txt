@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.16.3)
 project(LLVMUtils)
 
+set(CMAKE_COLOR_DIAGNOSTICS ON)
+set_property(GLOBAL PROPERTY CMAKE_COLOR_DIAGNOSTICS ON)
+
 # =============================================================================
 # Global CMake core & compiler settings
 # =============================================================================

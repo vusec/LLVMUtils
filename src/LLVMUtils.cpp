@@ -94,20 +94,31 @@ inline static const unordered_set<string> KnownMemFuncs = {"malloc",
                                                            "mbsdup",
                                                            "mbsndup"};
 
-// Print LLVM value to string object
-auto str(const Value *V) -> string {
-    if (!V) return "NULL";
-    string             S;
-    raw_string_ostream RSO(S);
-    if (V) { V->print(RSO, true); }
-    return S;
+// Truncate string to maximum length
+
+static inline auto isNL(char C) -> bool { return C == '\n'; }
+
+static inline auto trnc(string &S) -> string {
+    string Str(S);                                     // Create new string object
+    replace_if(Str.begin(), Str.end(), isNL, '\t');    // Replace newlines with tabs
+    return Str.substr(0, 64);                          // Return truncated NEW string
 }
-auto str(const Type *T) -> string {
-    if (!T) return "NULL";
-    string             S;
-    raw_string_ostream RSO(S);
-    if (T) { T->print(RSO, true); }
-    return S;
+
+// Print LLVM value to string object
+auto str(const llvm::Value *V) -> string {
+    try {
+        string                   S;
+        llvm::raw_string_ostream RSO(S);
+        if (V) { V->print(RSO, true); }
+        return trnc(S);
+    } catch (...) { return "ERROR"; }
+}
+auto str(const llvm::Type *T) -> string {
+    try {
+        string                   S;
+        llvm::raw_string_ostream RSO(S);
+        return trnc(S);
+    } catch (...) { return "ERROR"; }
 }
 
 // Convert boolean to readable string
@@ -182,7 +193,7 @@ auto getSrcLoc(const Instruction *I) -> pair<int64_t, int64_t> {
 auto getSrcLocStr(const Function *F, string ModID) -> string {
     DiagnosticLocation Loc(F ? F->getSubprogram() : nullptr);
     auto               FuncName = F ? demangle(F->getName().str()) : "unknown_function";
-    auto FileName = Loc.isValid() ? fs::path(Loc.getAbsolutePath()).filename() : "unknown_file";
+    auto               FileName = Loc.isValid() ? fs::path(Loc.getAbsolutePath()).filename() : "unknown_file";
     return FuncName + ";;" + FileName.string() + ";;" + ModID;
 }
 
