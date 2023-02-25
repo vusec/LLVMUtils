@@ -101,7 +101,7 @@ static inline auto isNL(char C) -> bool { return C == '\n'; }
 static inline auto trnc(string &S) -> string {
     string Str(S);                                     // Create new string object
     replace_if(Str.begin(), Str.end(), isNL, '\t');    // Replace newlines with tabs
-    return Str.substr(0, 64);                          // Return truncated NEW string
+    return Str.substr(0, 128);                         // Return truncated NEW string
 }
 
 // Print LLVM value to string object
