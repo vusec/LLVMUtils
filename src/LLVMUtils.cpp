@@ -206,7 +206,7 @@ auto isVarArgList(const Type *T) -> bool {
 }
 auto isOrHasVarArgList(const Type *T) -> bool {
     if (!T) throw invalid_argument("Null ptr argument!");
-    if (!T->isAggregateType() && !T->isVectorTy()) return false;
+    if (!T->isAggregateType() && !T->isVectorTy() && !T->isPointerTy()) return false;
 
     SmallPtrSet<const Type *, 4> Visited;
     SmallVector<const Type *, 4> Worklist;
@@ -220,6 +220,10 @@ auto isOrHasVarArgList(const Type *T) -> bool {
         const auto *Ty = Worklist.pop_back_val();
         if (!Ty) continue;
         if (isVarArgList(Ty)) return true;    // Ty is va_list struct
+        if (Ty->isPointerTy() && Ty->getPointerElementType()) {
+            AddWork(Ty->getPointerElementType());
+            continue;
+        }
         for (const auto *SubTy : Ty->subtypes()) {
             AddWork(SubTy);    // Explore all subtypes
         }

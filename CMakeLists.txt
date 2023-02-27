@@ -40,7 +40,10 @@ separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
 add_definitions(${LLVM_DEFINITIONS_LIST})
 include_directories(SYSTEM ${LLVM_INCLUDE_DIRS})
 
-llvm_map_components_to_libnames(llvm_libs all)
+# llvm_map_components_to_libnames(llvm_libs all) is broken
+# https://bugs.llvm.org/show_bug.cgi?id=47003
+llvm_map_components_to_libnames(llvm_libs demangle)
+message(STATUS "LLVM_LIBS: ${llvm_libs}")
 
 # =============================================================================
 # LLVM Utilities library definition
