@@ -65,8 +65,6 @@ auto getSrcLoc(const llvm::Instruction *) -> std::pair<int64_t, int64_t>;
 auto getSrcLocStr(const llvm::Function *, const std::string = "unknown_id") -> std::string;
 
 // Functions for determining whether given type or value is, contains, or uses a var-arg object
-auto isVarArgList(const llvm::Type *) -> bool;
-auto isOrHasVarArgList(const llvm::Type *) -> bool;
 auto isVarArgVal(const llvm::Value *) -> bool;
 
 // Create/get function type for return type and optional list of argument types
@@ -95,8 +93,7 @@ auto getGlobalCtorsVar(const llvm::Module &) -> llvm::GlobalVariable *;
 auto getGlobalCtors(llvm::GlobalVariable *) -> std::vector<std::pair<uint32_t, llvm::Function *>>;
 
 // Run the the default O0, O1, O2, or O3 optimisation pass pipelines on the given module
-auto optimiseModule(llvm::Module *, llvm::PassBuilder::OptimizationLevel)
-        -> llvm::PreservedAnalyses;
+auto optimiseModule(llvm::Module *, llvm::PassBuilder::OptimizationLevel) -> llvm::PreservedAnalyses;
 
 };    // namespace llvm_utils
 

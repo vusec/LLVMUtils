@@ -198,46 +198,46 @@ auto getSrcLocStr(const Function *F, string ModID) -> string {
 }
 
 // Functions for determining whether given type or value is, contains, or uses a var-arg object
-auto isVarArgList(const Type *T) -> bool {
-    if (!T) throw invalid_argument("Null ptr argument!");
-    if (!T->isStructTy()) return false;
-    auto *STy = dyn_cast<StructType>(T);
-    return STy && !STy->isLiteral() && STy->getName().contains_insensitive("va_list");
-}
-auto isOrHasVarArgList(const Type *T) -> bool {
-    if (!T) throw invalid_argument("Null ptr argument!");
-    if (!T->isAggregateType() && !T->isVectorTy() && !T->isPointerTy()) return false;
+auto isVarArgVal(const Value *V) -> bool {
+    if (!V || !V->getType()) return false;
 
-    SmallPtrSet<const Type *, 4> Visited;
-    SmallVector<const Type *, 4> Worklist;
-    auto                         AddWork = [&](const Type *Ty) -> void {
+    // Create a static unordered set (cosntant time lookup) to "cache" previous checks
+    static unordered_set<Type *> VarArgTys;
+    if (VarArgTys.contains(V->getType())) return true;
+
+    auto IsVarArgTy = [&](Type *Ty) -> bool {
+        if (auto *STy = dyn_cast_or_null<StructType>(Ty)) {
+            return STy->isLiteral() ? false : STy->getName().contains_insensitive("va_list");
+        }
+        return false;
+    };
+
+    // Explore this type and all of its subtypes using a worklist
+    SmallPtrSet<Type *, 4> Visited;
+    SmallVector<Type *, 4> Worklist;
+    auto                   AddWork = [&](Type *Ty) -> void {
         if (Ty && Visited.insert(Ty).second) Worklist.push_back(Ty);
     };
 
-    // Check if the type itself, or any of its contained subtypes recursively, are va_list structs
-    AddWork(T);
+    AddWork(V->getType());
+
     while (!Worklist.empty()) {
-        const auto *Ty = Worklist.pop_back_val();
-        if (!Ty) continue;
-        if (isVarArgList(Ty)) return true;    // Ty is va_list struct
-        if (Ty->isPointerTy() && Ty->getPointerElementType()) {
-            AddWork(Ty->getPointerElementType());
-            continue;
+        auto *Ty = Worklist.pop_back_val();
+
+        // If this is a non-first-class type, skip it
+        if (!Ty->isFirstClassType()) continue;
+
+        // If this type is a vararg, store the CALLED type in the cache & return true
+        if (IsVarArgTy(Ty)) {
+            VarArgTys.insert(V->getType());
+            return true;
         }
-        for (const auto *SubTy : Ty->subtypes()) {
-            AddWork(SubTy);    // Explore all subtypes
-        }
+
+        // Add all contained/subtypes to the worklist to explore them as well
+        if (Ty->isPointerTy()) AddWork(Ty->getPointerElementType());
+        for (auto *SubTy : Ty->subtypes()) AddWork(SubTy);
     }
-    return false;    // No matches to va_list struct found
-}
-auto isVarArgVal(const Value *V) -> bool {
-    if (!V) throw invalid_argument("Null ptr argument!");
-    if (isOrHasVarArgList(V->getType())) return true;
-    if (const auto *U = dyn_cast<User>(V)) {
-        for (const auto *Op : U->operand_values()) {
-            if (isOrHasVarArgList(Op->getType())) return true;
-        }
-    }
+
     return false;
 }
 
