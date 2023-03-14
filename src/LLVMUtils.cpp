@@ -171,6 +171,22 @@ auto staysDead(IntrinsicInst *II) -> bool {
     return true;    // No lifetime start marker uses II after II; addr stays dead until func ret
 }
 
+// Determine whether the memory operand access is statically known to be fully in bounds & safe
+auto isFullySafeAccess(ObjectSizeOffsetVisitor &ObjSizeVis, Value *Addr, uint64_t TySize) -> bool {
+    SizeOffsetType SizeOffset = ObjSizeVis.compute(Addr);
+    if (!ObjSizeVis.bothKnown(SizeOffset)) return false;
+
+    // Retrieve size & offset
+    uint64_t Size   = SizeOffset.first.getZExtValue();
+    int64_t  Offset = SizeOffset.second.getSExtValue();
+
+    // Three checks are required to ensure safety:
+    // . Offset >= 0  (since the offset is given from the base ptr)
+    // . Size >= Offset  (unsigned)
+    // . Size - Offset >= NeededSize  (unsigned)
+    return Offset >= 0 && Size >= uint64_t(Offset) && Size - uint64_t(Offset) >= TySize / 8;
+}
+
 // Get fully inlined source location (walk inlined-at chain)
 auto getFullyInlinedSrcLoc(const Instruction *I) -> DILocation * {
     if (!I) throw invalid_argument("Null ptr argument!");

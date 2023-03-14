@@ -15,6 +15,7 @@
 #include <llvm/ADT/iterator_range.h>
 #include <llvm/ADT/STLExtras.h>
 #include <llvm/ADT/StringRef.h>
+#include <llvm/Analysis/MemoryBuiltins.h>
 #include <llvm/IR/DebugInfoMetadata.h>
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/Function.h>
@@ -54,6 +55,9 @@ auto isSysDef(const llvm::Instruction *const) -> bool;
 
 // Check if address marked dead is certain to never become alive again after lifetime end marker
 auto staysDead(llvm::IntrinsicInst *) -> bool;
+
+// Determine whether the memory operand access is statically known to be fully in bounds & safe
+auto isFullySafeAccess(llvm::ObjectSizeOffsetVisitor &, llvm::Value *, uint64_t) -> bool;
 
 // Get fully inlined source location (walk inlined-at chain)
 auto getFullyInlinedSrcLoc(const llvm::Instruction *) -> llvm::DILocation *;
