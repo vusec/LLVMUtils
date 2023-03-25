@@ -109,7 +109,7 @@ auto str(const llvm::Value *V) -> string {
     try {
         string                   S;
         llvm::raw_string_ostream RSO(S);
-        if (V) { V->print(RSO, true); }
+        if (V) V->print(RSO, true);
         return trnc(S);
     } catch (...) { return "ERROR"; }
 }
@@ -117,6 +117,7 @@ auto str(const llvm::Type *T) -> string {
     try {
         string                   S;
         llvm::raw_string_ostream RSO(S);
+        if (T) T->print(RSO, true);
         return trnc(S);
     } catch (...) { return "ERROR"; }
 }
@@ -211,50 +212,6 @@ auto getSrcLocStr(const Function *F, string ModID) -> string {
     auto               FuncName = F ? demangle(F->getName().str()) : "unknown_function";
     auto               FileName = Loc.isValid() ? fs::path(Loc.getAbsolutePath()).filename() : "unknown_file";
     return FuncName + ";;" + FileName.string() + ";;" + ModID;
-}
-
-// Functions for determining whether given type or value is, contains, or uses a var-arg object
-auto isVarArgVal(const Value *V) -> bool {
-    if (!V || !V->getType()) return false;
-
-    // Create a static unordered set (cosntant time lookup) to "cache" previous checks
-    static unordered_set<Type *> VarArgTys;
-    if (VarArgTys.contains(V->getType())) return true;
-
-    auto IsVarArgTy = [&](Type *Ty) -> bool {
-        if (auto *STy = dyn_cast_or_null<StructType>(Ty)) {
-            return STy->isLiteral() ? false : STy->getName().contains_insensitive("va_list");
-        }
-        return false;
-    };
-
-    // Explore this type and all of its subtypes using a worklist
-    SmallPtrSet<Type *, 4> Visited;
-    SmallVector<Type *, 4> Worklist;
-    auto                   AddWork = [&](Type *Ty) -> void {
-        if (Ty && Visited.insert(Ty).second) Worklist.push_back(Ty);
-    };
-
-    AddWork(V->getType());
-
-    while (!Worklist.empty()) {
-        auto *Ty = Worklist.pop_back_val();
-
-        // If this is a non-first-class type, skip it
-        if (!Ty->isFirstClassType()) continue;
-
-        // If this type is a vararg, store the CALLED type in the cache & return true
-        if (IsVarArgTy(Ty)) {
-            VarArgTys.insert(V->getType());
-            return true;
-        }
-
-        // Add all contained/subtypes to the worklist to explore them as well
-        if (Ty->isPointerTy()) AddWork(Ty->getPointerElementType());
-        for (auto *SubTy : Ty->subtypes()) AddWork(SubTy);
-    }
-
-    return false;
 }
 
 // Create/get function type for return type and optional list of argument types

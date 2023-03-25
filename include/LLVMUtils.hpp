@@ -68,9 +68,6 @@ auto getSrcLoc(const llvm::Instruction *) -> std::pair<int64_t, int64_t>;
 // Get string with the name of the function & the file where the function is defined
 auto getSrcLocStr(const llvm::Function *, const std::string = "unknown_id") -> std::string;
 
-// Functions for determining whether given type or value is, contains, or uses a var-arg object
-auto isVarArgVal(const llvm::Value *) -> bool;
-
 // Create/get function type for return type and optional list of argument types
 auto getFnTy(llvm::Type *) -> llvm::FunctionType *;
 auto getFnTy(llvm::Type *, std::vector<llvm::Type *>) -> llvm::FunctionType *;
