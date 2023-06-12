@@ -3,7 +3,8 @@
         "baseDir": "${workspaceFolder}/VeriPatch",
         "ffMallocDir": "${baseDir}/FFMalloc",
         "ubstarDir": "${baseDir}/UBStar",
-        "passDir": "${baseDir}/InstrumentPass"
+        "passDir": "${baseDir}/InstrumentPass",
+        "krml_home": "/opt/everest/karamel"
     },
     "configurations": [
         {
@@ -14,14 +15,18 @@
                 "${ubstarDir}/code/**",
                 "${ubstarDir}/dist/**",
                 "${passDir}/include/**",
-                "/home/ubuntu/Everest/kremlin/include/**",
-                "/home/ubuntu/Everest/kremlin/kremlib/dist/generic/**"
+                "${krml_home}/include/**",
+                "${krml_home}/krmllib/dist/generic/**",
+                "/usr/include/llvm-15",
+                "/usr/lib/llvm-15/include"
             ],
             "cStandard": "c11",
             "cppStandard": "c++20",
             "compileCommands": "${passDir}/compile_commands.json",
             "browse": {
-                "path": ["${workspaceFolder}"]
+                "path": [
+                    "${workspaceFolder}"
+                ]
             }
         }
     ],

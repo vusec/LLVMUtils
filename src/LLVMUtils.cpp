@@ -283,7 +283,7 @@ auto isLifetimeEnd(const Instruction *I) -> bool {
 // Get set of all alloca instructions that could have allocated the lifetime marker's address
 auto getAllocas(const IntrinsicInst *II) -> set<AllocaInst *> {
     if (!II) throw invalid_argument("Null ptr argument!");
-    if (!II->isLifetimeStartOrEnd()) return {};    // Only check valid lifetime markers
+    if (!II->isLifetimeStartOrEnd()) return {};          // Only check valid lifetime markers
 
     auto                   *Addr = II->getOperand(1);    // Marked address is in operand 1
     SmallVector<Value *, 4> SrcObjs;                     // All underlying objects
@@ -303,7 +303,7 @@ auto dumpIR(const Module *M, string File) -> void {
     error_code     EC;
     raw_fd_ostream IRDumpFile(File, EC);    // Truncates existing
     if (IRDumpFile.has_error()) return;
-    M->print(IRDumpFile, nullptr);    // Dump with debug info
+    M->print(IRDumpFile, nullptr);          // Dump with debug info
     IRDumpFile.close();
 }
 
@@ -342,7 +342,7 @@ auto getGlobalCtors(GlobalVariable *GV) -> vector<pair<uint32_t, Function *>> {
 }
 
 // Run the the default O0, O1, O2, or O3 optimisation pass pipelines on the given module
-auto optimiseModule(Module *M, PassBuilder::OptimizationLevel OptLevel) -> PreservedAnalyses {
+auto optimiseModule(Module *M, OptimizationLevel OptLevel) -> PreservedAnalyses {
     if (!M) throw invalid_argument("Null ptr argument!");
     LoopAnalysisManager     LAM;
     FunctionAnalysisManager FAM;

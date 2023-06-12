@@ -26,10 +26,10 @@ add_link_options("-fuse-ld=lld")
 # =============================================================================
 # LLVM & LLVM SETTINGS/CONFIG
 # =============================================================================
-find_package(LLVM 13 REQUIRED CONFIG)
+find_package(LLVM 15 REQUIRED CONFIG)
 
-if(NOT "13" VERSION_EQUAL "${LLVM_VERSION_MAJOR}")
-    message(FATAL_ERROR "Found LLVM ${LLVM_VERSION_MAJOR}; need LLVM version 13!")
+if(NOT "15" VERSION_EQUAL "${LLVM_VERSION_MAJOR}")
+    message(FATAL_ERROR "Found LLVM ${LLVM_VERSION_MAJOR}; need LLVM version 15!")
 endif()
 
 if(NOT LLVM_ENABLE_RTTI)

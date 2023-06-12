@@ -94,8 +94,8 @@ auto getGlobalCtorsVar(const llvm::Module &) -> llvm::GlobalVariable *;
 auto getGlobalCtors(llvm::GlobalVariable *) -> std::vector<std::pair<uint32_t, llvm::Function *>>;
 
 // Run the the default O0, O1, O2, or O3 optimisation pass pipelines on the given module
-auto optimiseModule(llvm::Module *, llvm::PassBuilder::OptimizationLevel) -> llvm::PreservedAnalyses;
+auto optimiseModule(llvm::Module *, llvm::OptimizationLevel) -> llvm::PreservedAnalyses;
 
-};    // namespace llvm_utils
+};        // namespace llvm_utils
 
 #endif    // LLVMUtils
