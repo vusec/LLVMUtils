@@ -93,7 +93,6 @@ target_sources(LLVMUtils
         FILES ${LLVMUtils_SOURCE_DIR}/include/LLVMUtils.hpp
 )
 
-target_link_options(LLVMUtils PUBLIC "-flto")
 target_compile_definitions(LLVMUtils PUBLIC "_BSD_SOURCE" "_DEFAULT_SOURCE")
 target_compile_options(LLVMUtils PUBLIC -g -O3 -flto -fwrapv)
 target_compile_options(LLVMUtils PRIVATE -Wall -Wextra -Wpedantic)
