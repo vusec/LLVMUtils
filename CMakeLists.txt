@@ -12,9 +12,12 @@ set(CMAKE_VERBOSE_MAKEFILE ON CACHE STRING "Toggle verbose Makefiles")
 set(CMAKE_BUILD_TYPE Debug CACHE STRING "Set the build type (default: debug)")
 
 # Configure C standard used
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_C_STANDARD 23)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_C_EXTENSIONS ON)
 set(CMAKE_CXX_EXTENSIONS ON)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # =============================================================================
 # Core project definition
