@@ -1,97 +1,113 @@
-cmake_minimum_required(VERSION 3.16.3)
-project(LLVMUtils)
+cmake_minimum_required(VERSION 3.23)
 
+# Configure some high-level compiler options & settings
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+set(CMAKE_COLOR_MAKEFILE ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
-set_property(GLOBAL PROPERTY CMAKE_COLOR_DIAGNOSTICS ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-# =============================================================================
-# Global CMake core & compiler settings
-# =============================================================================
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
-set(CMAKE_VERBOSE_MAKEFILE on CACHE STRING "Verbose Makefiles")
-set(LOG_LVL LVL_INFO CACHE STRING "Logging level for VeriPatch")
-set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type debug" FORCE)
+set(CMAKE_VERBOSE_MAKEFILE ON CACHE STRING "Toggle verbose Makefiles")
+set(CMAKE_BUILD_TYPE Debug CACHE STRING "Set the build type (default: debug)")
+
+# Configure C standard used
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_EXTENSIONS ON)
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-add_compile_options("-Wall")
-add_compile_options("-fdiagnostics-color=always")
-add_link_options("-fuse-ld=lld")
+# =============================================================================
+# Core project definition
+# =============================================================================
+project(LLVMUtils
+    VERSION
+        1.0
+    DESCRIPTION
+        "Library of generic utility functions & extensions to default LLVM"
+    LANGUAGES
+        C CXX
+)
+
+# Load GNU install directory namings (e.g. /usr/local/bin, /usr/local/lib, etc.)
+include(GNUInstallDirs)
+
+message(STATUS "LLVMUtils build configuration:
+\tTarget project: ${PROJECT_NAME}
+\tRoot directory:  ${LLVMUtils_SOURCE_DIR}")
 
 # =============================================================================
 # LLVM & LLVM SETTINGS/CONFIG
 # =============================================================================
-find_package(LLVM 15 REQUIRED CONFIG)
+# Configure default LLVM location
+set(LLVM_ROOT $ENV{LLVM_DIR} CACHE PATH "Root of LLVM installation")
+if(NOT EXISTS ${LLVM_ROOT}/include/llvm)
+    message(FATAL_ERROR "LLVM_ROOT (${LLVM_ROOT}) is invalid!")
+endif()
+list(APPEND CMAKE_PREFIX_PATH "${LLVM_ROOT}/lib/cmake/llvm/")
 
-if(NOT "15" VERSION_EQUAL "${LLVM_VERSION_MAJOR}")
-    message(FATAL_ERROR "Found LLVM ${LLVM_VERSION_MAJOR}; need LLVM version 15!")
+find_package(LLVM CONFIG)
+message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+message(STATUS "Using LLVMConfig.cmake in: ${LT_LLVM_INSTALL_DIR}")
+
+message("LLVM STATUS:
+  Definitions ${LLVM_DEFINITIONS}
+  Includes    ${LLVM_INCLUDE_DIRS}
+  Libraries   ${LLVM_LIBRARY_DIRS}
+  Targets     ${LLVM_TARGETS_TO_BUILD}"
+)
+
+if(NOT "${LLVM_VERSION_MAJOR}" VERSION_EQUAL 15)
+    message(FATAL_ERROR "LLVM version mismatch: expected 15; found ${LLVM_VERSION}")
 endif()
 
-if(NOT LLVM_ENABLE_RTTI)
-    add_compile_options("-fno-rtti")
-endif()
-
+# Set the LLVM header and library paths
 separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
-add_definitions(${LLVM_DEFINITIONS_LIST})
 include_directories(SYSTEM ${LLVM_INCLUDE_DIRS})
+link_directories(${LLVM_LIBRARY_DIRS})
+add_definitions(${LLVM_DEFINITIONS})
 
-# llvm_map_components_to_libnames(llvm_libs all) is broken
-# https://bugs.llvm.org/show_bug.cgi?id=47003
-llvm_map_components_to_libnames(llvm_libs demangle)
-message(STATUS "LLVM_LIBS: ${llvm_libs}")
+# LLVM is normally built without RTTI. Be consistent with that.
+if(NOT LLVM_ENABLE_RTTI)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+endif()
+
+# # llvm_map_components_to_libnames(llvm_libs all) is broken
+# # https://bugs.llvm.org/show_bug.cgi?id=47003
+# llvm_map_components_to_libnames(llvm_libs demangle)
+# message(STATUS "LLVM_LIBS: ${llvm_libs}")
 
 # =============================================================================
-# LLVM Utilities library definition
+# Define the actual runtime library target and include its subdirectory
 # =============================================================================
 add_library(LLVMUtils SHARED)
 
-set_target_properties(LLVMUtils
-    PROPERTIES
-        CXX_STANDARD 20
-        CXX_STANDARD_REQUIRED ON
-        CXX_EXTENSIONS ON
-        C_STANDARD 11
-        C_STANDARD_REQUIRED ON
-        C_EXTENSIONS ON
+# Define the sources for the utilities library
+target_sources(LLVMUtils
+    PRIVATE ${LLVMUtils_SOURCE_DIR}/src/LLVMUtils.cpp
+    PUBLIC
+        FILE_SET HEADERS
+        BASE_DIRS ${DIST_DIR}
+        FILES ${LLVMUtils_SOURCE_DIR}/include/LLVMUtils.hpp
 )
 
-target_compile_options(LLVMUtils
-    PRIVATE
-        "-g"
-        "-O2"
-        "-Wall"
-        "-Wextra"
-        "-Wno-reorder"
-        "-Wno-unused-parameter"
-        "-Wno-overloaded-virtual"
-        "-Wno-ignored-qualifiers"
-        "-fdiagnostics-color=always"
+target_link_options(LLVMUtils PUBLIC "-flto")
+target_compile_definitions(LLVMUtils PUBLIC "_BSD_SOURCE" "_DEFAULT_SOURCE")
+target_compile_options(LLVMUtils PUBLIC -g -O3 -flto -fwrapv)
+target_compile_options(LLVMUtils PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_options(LLVMUtils PUBLIC
+    $<IF:$<C_COMPILER_ID:GNU>,-fdiagnostics-color=always,$<$<C_COMPILER_ID:Clang>:-fcolor-diagnostics>>
 )
 
-target_link_options(LLVMUtils PRIVATE "-fuse-ld=lld")
+# target_link_options(LLVMUtils PRIVATE "-fuse-ld=lld")
 target_include_directories(LLVMUtils PUBLIC "include")
 
-target_link_libraries(LLVMUtils ${llvm_libs})
-
-add_subdirectory(include)
-add_subdirectory(src)
+# target_link_libraries(LLVMUtils ${llvm_libs})
 
 # Get and install into default installation dirs. Don't export headers, only compiled libs
-include(GNUInstallDirs)
 install(
-    TARGETS
-        LLVMUtils
-    RUNTIME
-        DESTINATION ${CMAKE_INSTALL_BINDIR}
-    LIBRARY
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    TARGETS LLVMUtils
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
