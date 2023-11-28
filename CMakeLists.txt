@@ -76,7 +76,6 @@ target_sources(LLVMUtils
     PRIVATE ${LLVMUtils_SOURCE_DIR}/src/LLVMUtils.cpp
     PUBLIC
         FILE_SET HEADERS
-        BASE_DIRS ${DIST_DIR}
         FILES ${LLVMUtils_SOURCE_DIR}/include/LLVMUtils.hpp
 )
 
