@@ -11,14 +11,6 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_VERBOSE_MAKEFILE ON CACHE STRING "Toggle verbose Makefiles")
 set(CMAKE_BUILD_TYPE Debug CACHE STRING "Set the build type (default: debug)")
 
-# Configure C standard used
-set(CMAKE_C_STANDARD 23)
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_C_EXTENSIONS ON)
-set(CMAKE_CXX_EXTENSIONS ON)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 # =============================================================================
 # Core project definition
 # =============================================================================
@@ -91,6 +83,16 @@ target_sources(LLVMUtils
         FILE_SET HEADERS
         BASE_DIRS ${DIST_DIR}
         FILES ${LLVMUtils_SOURCE_DIR}/include/LLVMUtils.hpp
+)
+
+set_target_properties(LLVMUtils
+    PROPERTIES
+        C_STANDARD 23
+        CXX_STANDARD 23
+        C_EXTENSIONS ON
+        CXX_EXTENSIONS ON
+        C_STANDARD_REQUIRED ON
+        CXX_STANDARD_REQUIRED ON
 )
 
 target_compile_definitions(LLVMUtils PUBLIC "_BSD_SOURCE" "_DEFAULT_SOURCE")
