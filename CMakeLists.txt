@@ -71,11 +71,14 @@ endif()
 # =============================================================================
 add_library(LLVMUtils SHARED)
 
+target_include_directories(LLVMUtils PUBLIC "${LLVMUtils_SOURCE_DIR}/include")
+
 # Define the sources for the utilities library
 target_sources(LLVMUtils
     PRIVATE ${LLVMUtils_SOURCE_DIR}/src/LLVMUtils.cpp
     PUBLIC
         FILE_SET HEADERS
+        BASE_DIRS "${LLVMUtils_SOURCE_DIR}/include"
         FILES ${LLVMUtils_SOURCE_DIR}/include/LLVMUtils.hpp
 )
 
@@ -95,8 +98,6 @@ target_compile_options(LLVMUtils PRIVATE -Wall -Wextra -Wpedantic)
 target_compile_options(LLVMUtils PUBLIC
     $<IF:$<C_COMPILER_ID:GNU>,-fdiagnostics-color=always,$<$<C_COMPILER_ID:Clang>:-fcolor-diagnostics>>
 )
-
-target_include_directories(LLVMUtils PUBLIC "include")
 
 # Get and install into default installation dirs. Don't export headers, only compiled libs
 install(
