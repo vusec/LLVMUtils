@@ -43,8 +43,8 @@ else()
     find_package(LLVM CONFIG QUIET)
 endif()
 
-if(NOT "${LLVM_VERSION_MAJOR}" VERSION_EQUAL 15)
-    message(FATAL_ERROR "LLVM version mismatch: expected 15; found ${LLVM_VERSION}")
+if(NOT LLVM_FOUND OR NOT "${LLVM_VERSION_MAJOR}" VERSION_EQUAL 15)
+    message(FATAL_ERROR "Invalid LLVM: expected 15; found ${LLVM_VERSION}")
 endif()
 
 # Set the LLVM header and library paths
@@ -63,21 +63,21 @@ endif()
 # =============================================================================
 add_library(LLVMUtils SHARED)
 
-target_include_directories(LLVMUtils PUBLIC "${LLVMUtils_SOURCE_DIR}/include")
+target_include_directories(LLVMUtils PUBLIC include)
 
 # Define the sources for the utilities library
 target_sources(LLVMUtils
-    PRIVATE ${LLVMUtils_SOURCE_DIR}/src/LLVMUtils.cpp
+    PRIVATE "${LLVMUtils_SOURCE_DIR}/src/LLVMUtils.cpp"
     PUBLIC
         FILE_SET HEADERS
         BASE_DIRS "${LLVMUtils_SOURCE_DIR}/include"
-        FILES ${LLVMUtils_SOURCE_DIR}/include/LLVMUtils.hpp
+        FILES "${LLVMUtils_SOURCE_DIR}/include/LLVMUtils.hpp"
 )
 
 set_target_properties(LLVMUtils
     PROPERTIES
-        C_STANDARD 23
-        CXX_STANDARD 23
+        C_STANDARD 11
+        CXX_STANDARD 20
         C_EXTENSIONS ON
         CXX_EXTENSIONS ON
         C_STANDARD_REQUIRED ON
