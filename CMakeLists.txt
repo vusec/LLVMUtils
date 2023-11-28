@@ -66,11 +66,6 @@ if(NOT LLVM_ENABLE_RTTI)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
 endif()
 
-# # llvm_map_components_to_libnames(llvm_libs all) is broken
-# # https://bugs.llvm.org/show_bug.cgi?id=47003
-# llvm_map_components_to_libnames(llvm_libs demangle)
-# message(STATUS "LLVM_LIBS: ${llvm_libs}")
-
 # =============================================================================
 # Define the actual runtime library target and include its subdirectory
 # =============================================================================
@@ -102,10 +97,7 @@ target_compile_options(LLVMUtils PUBLIC
     $<IF:$<C_COMPILER_ID:GNU>,-fdiagnostics-color=always,$<$<C_COMPILER_ID:Clang>:-fcolor-diagnostics>>
 )
 
-# target_link_options(LLVMUtils PRIVATE "-fuse-ld=lld")
 target_include_directories(LLVMUtils PUBLIC "include")
-
-# target_link_libraries(LLVMUtils ${llvm_libs})
 
 # Get and install into default installation dirs. Don't export headers, only compiled libs
 install(
