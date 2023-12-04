@@ -22,16 +22,27 @@ message(STATUS "LLVMUtils build configuration:
 # =============================================================================
 # LLVM & LLVM SETTINGS/CONFIG
 # =============================================================================
-# Configure default LLVM location
-set(LLVM_ROOT $ENV{LLVM_DIR} CACHE PATH "Root of LLVM installation")
-if(NOT EXISTS ${LLVM_ROOT}/include/llvm)
-    message(FATAL_ERROR "LLVM_ROOT (${LLVM_ROOT}) is invalid!")
-endif()
-list(APPEND CMAKE_PREFIX_PATH "${LLVM_ROOT}/lib/cmake/llvm/")
+if(DEFINED LLVM_ROOT OR DEFINED ENV{LLVM_ROOT})
+    if(NOT DEFINED LLVM_ROOT)
+        set(LLVM_ROOT $ENV{LLVM_ROOT})
+    endif()
 
-if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
-    find_package(LLVM CONFIG)
-    message("LLVM STATUS:
+    message(STATUS "Finding LLVM in custom LLVM root: ${LLVM_ROOT}")
+    if(EXISTS "${LLVM_ROOT}/lib/cmake/llvm")
+        list(APPEND CMAKE_PREFIX_PATH "${LLVM_ROOT}/lib/cmake/llvm/")
+    else()
+        list(APPEND CMAKE_PREFIX_PATH "${LLVM_ROOT}")
+    endif()
+endif()
+
+if(LLVM_FOUND)
+    message(STATUS "LLVM configuration already found by top-level project")
+    if(NOT "${LLVM_VERSION_MAJOR}" VERSION_EQUAL 15)
+        message(FATAL_ERROR "Need LLVM version 15; got ${LLVM_PACKAGE_VERSION}!")
+    endif()
+else()
+    find_package(LLVM 15.0.7 CONFIG)
+    message(STATUS "LLVM STATUS:
     FOUND         ${LLVM_FOUND}
     Version       ${LLVM_PACKAGE_VERSION}
     Definitions   ${LLVM_DEFINITIONS}
@@ -39,12 +50,10 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     Libraries     ${LLVM_LIBRARY_DIRS}
     Targets       ${LLVM_TARGETS_TO_BUILD}"
     )
-else()
-    find_package(LLVM CONFIG QUIET)
 endif()
 
-if(NOT LLVM_FOUND OR NOT "${LLVM_VERSION_MAJOR}" VERSION_EQUAL 15)
-    message(FATAL_ERROR "Invalid LLVM: expected 15; found ${LLVM_VERSION}")
+if(NOT "${LLVM_FOUND}")
+    message(FATAL_ERROR "Failed to find correct LLVM version")
 endif()
 
 # Set the LLVM header and library paths
